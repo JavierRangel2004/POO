@@ -1,0 +1,9 @@
+sonideros=["changa","chango","changue",1,True,4,5]
+print(sonideros[3])
+print(sonideros[1])
+lista2=["tiempo","espacio"]
+lista=["hola","como",[1,4,lista2]]
+print(lista[2][2][0])
+sonideros[2]=45
+print(sonideros)
+print(lista)
