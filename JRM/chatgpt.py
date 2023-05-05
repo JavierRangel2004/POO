@@ -1,6 +1,6 @@
 def nombre_apellido(nombre):
     import openai
-    openai.api_key = "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"
+    openai.api_key = "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"
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
