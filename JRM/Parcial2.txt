@@ -1,0 +1,79 @@
+/*1. Explica con tus propias palabras qué es la normalización.
+Consiste en organizar los datos para reducir la redundancia y mejorar la integridad de los datos y esto se hace en base a tres formas normales.
+2. Explica con tus propias palabras la primera forma normal. [10 puntos]
+No permitir grupos repetidos, separar bien los datos
+No usar el orden de registro como un dato
+Usar PK al diseñar y crear la tabla
+
+CODIGO:*/
+
+CREATE TABLE album (
+    id INT PRIMARY KEY,
+    title VARCHAR(50) NOT NULL,
+    release_date DATE NOT NULL,
+    genre VARCHAR(20) NOT NULL,
+    is_live BOOL NOT NULL
+);
+
+CREATE TABLE song (
+    id INT PRIMARY KEY,
+    title VARCHAR(50) NOT NULL,
+    length INT NOT NULL,
+    album_id INT NOT NULL,
+    FOREIGN KEY (album_id) REFERENCES album(id)
+);
+
+CREATE TABLE instrument (
+    id INT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    is_acoustic BOOL NOT NULL
+);
+
+INSERT INTO album (id, title, release_date, genre, is_live)
+VALUES
+    (1, 'A Night at the Opera', '1975-11-21', 'Rock', FALSE),
+    (2, 'The Game', '1980-06-30', 'Rock', FALSE),
+    (3, 'Live Killers', '1979-06-22', 'Rock', TRUE),
+    (4, 'News of the World', '1977-10-28', 'Rock', FALSE),
+    (5, 'Jazz', '1978-11-10', 'Rock', FALSE);
+
+INSERT INTO song (id, title, length, album_id)
+VALUES
+    (1, 'Bohemian Rhapsody', 354, 1),
+    (2, 'Somebody to Love', 299, 1),
+    (3, 'We Will Rock You', 122, 4),
+    (4, 'Don''t Stop Me Now', 210, 2),
+    (5, 'Bicycle Race', 180, 5);
+
+INSERT INTO instrument (id, name, type, is_acoustic)
+VALUES
+    (1, 'Guitar', 'String', FALSE),
+    (2, 'Drums', 'Percussion', FALSE),
+    (3, 'Piano', 'Keyboard', TRUE),
+    (4, 'Bass', 'String', FALSE),
+    (5, 'Trumpet', 'Brass', TRUE);
+
+
+SELECT * FROM album;
+SELECT * FROM song;
+SELECT * FROM instrument;
+
+SELECT SUM(length) FROM song;
+SELECT MIN(release_date) FROM album;
+
+SELECT * FROM album ORDER BY release_date ASC;
+
+SELECT * FROM album WHERE genre = 'Rock';
+
+INSERT INTO song (id, title, length, album_id)
+VALUES (6, 'Under Pressure', 240, 4);
+
+DELETE FROM instrument WHERE is_acoustic = TRUE;
+
+SELECT album.title, COUNT(song.id) AS song_count
+FROM album
+LEFT JOIN song ON album.id = song.album_id
+GROUP BY album.id;
+
+/*SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'album' AND COLUMN_NAME = 'release_date';*/
