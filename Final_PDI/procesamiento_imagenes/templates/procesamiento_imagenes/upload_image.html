@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualización de la Imagen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Function to update the image preview with a smooth transition
+        function previewImage() {
+            const [file] = document.querySelector('input[type=file]').files;
+            const preview = document.getElementById('image-preview');
+            const submitButton = document.getElementById('submit-button');
+            const reader = new FileReader();
+
+            reader.addEventListener("load", function () {
+                // Convert image file to base64 string and display it with a transition
+                preview.src = reader.result;
+                preview.classList.remove('hidden');
+                preview.classList.add('fadeIn');
+                submitButton.classList.remove('hidden'); // Show the submit button
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+    <style>
+        /* Fade-in effect for the image preview */
+        .fadeIn {
+            animation: fadeIn ease 1s;
+            -webkit-animation: fadeIn ease 1s;
+            -moz-animation: fadeIn ease 1s;
+            -o-animation: fadeIn ease 1s;
+            -ms-animation: fadeIn ease 1s;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Other animations styles if needed */
+    </style>
+</head>
+
+<body class="bg-gray-900 flex flex-col justify-center items-center h-screen gap-4">
+
+    <img id="image-preview" alt="Image preview"
+        class="hidden rounded-lg max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl object-contain fadeIn" />
+
+    <button onclick="document.getElementById('image_input').click()"
+        class="animate-pulse bg-gradient-to-r from-pink-500 to-yellow-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring">
+        Subir/Cambiar imagen
+    </button>
+
+    <form action="{% url 'image_upload' %}" method="post" enctype="multipart/form-data"
+        class="flex flex-col items-center gap-4">
+        {% csrf_token %}
+        <input id="image_input" type='file' name="image_file" accept="image/*" class="hidden"
+            onchange="previewImage()" />
+        <button id="submit-button"
+            class="hidden bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700 transition duration-300 ease-in-out"
+            type="submit">
+            Cargar y Aplicar Filtros
+        </button>
+    </form>
+
+</body>
+
+</html>
