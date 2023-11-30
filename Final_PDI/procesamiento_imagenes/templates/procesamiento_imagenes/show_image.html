@@ -14,6 +14,20 @@
         <h1 class="text-4xl font-bold text-center mb-8">Resultados de Filtros Aplicados</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!--                filters = {
+                    'original': file_url,
+                    'sin_ruido': save_filter_image(fs, image_sin_ruido, 'sin_ruido_' + file_name),
+                    'mejorada': save_filter_image(fs, image_mejorada, 'mejorada_' + file_name),
+                    'sepia': save_filter_image(fs, image_sepia, 'sepia_' + file_name),
+                    'BGR': save_filter_image(fs, image_BGR, 'BGR_' + file_name),
+                    'bnw': save_filter_image(fs, image_bnw, 'bnw_' + file_name),
+                    'binarizada': save_filter_image(fs, image_binarizada, 'binarizada_' + file_name),
+                    'negativa': save_filter_image(fs, image_negativa, 'negativa_' + file_name),
+                    'log': save_filter_image(fs, image_log, 'log_' + file_name),
+                    'histograma': save_filter_image(fs, image_histograma, 'histograma_' + file_name),
+                    'suavizada': save_filter_image(fs, image_suavizada, 'suavizada_' + file_name),
+                    'umbralizada': save_filter_image(fs, image_umbralizada, 'umbralizada_' + file_name),
+                }-->
             <div class="flex flex-col items-center">
                 <img src="{{ original }}" alt="Original Image"
                     class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
@@ -55,6 +69,48 @@
                 <p
                     class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
                     Blanco y Negro</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ binarizada }}" alt="Binarizada"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Binarizada</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ negativa }}" alt="Negativa"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Negativa</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ log }}" alt="Log"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Log</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ histograma }}" alt="Histograma"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Histograma</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ suavizada }}" alt="Suavizada"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Suavizada</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ umbralizada }}" alt="Umbralizada"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Umbralizada</p>
             </div>
         </div>
         <!-- Button to go back to the upload page -->
