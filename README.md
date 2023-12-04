@@ -50,4 +50,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ---
 
 Thank you for using or contributing to Final_PDI Django Web App! 🌟
-```
