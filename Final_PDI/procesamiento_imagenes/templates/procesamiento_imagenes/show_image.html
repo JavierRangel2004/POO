@@ -14,19 +14,25 @@
         <h1 class="text-4xl font-bold text-center mb-8">Resultados de Filtros Aplicados</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!--                filters = {
-                    'original': file_url,
-                    'sin_ruido': save_filter_image(fs, image_sin_ruido, 'sin_ruido_' + file_name),
-                    'mejorada': save_filter_image(fs, image_mejorada, 'mejorada_' + file_name),
-                    'sepia': save_filter_image(fs, image_sepia, 'sepia_' + file_name),
-                    'BGR': save_filter_image(fs, image_BGR, 'BGR_' + file_name),
-                    'bnw': save_filter_image(fs, image_bnw, 'bnw_' + file_name),
-                    'binarizada': save_filter_image(fs, image_binarizada, 'binarizada_' + file_name),
-                    'negativa': save_filter_image(fs, image_negativa, 'negativa_' + file_name),
-                    'log': save_filter_image(fs, image_log, 'log_' + file_name),
-                    'histograma': save_filter_image(fs, image_histograma, 'histograma_' + file_name),
-                    'suavizada': save_filter_image(fs, image_suavizada, 'suavizada_' + file_name),
-                    'umbralizada': save_filter_image(fs, image_umbralizada, 'umbralizada_' + file_name),
+            <!--filters = {
+                        'original': file_url,
+                        'sin_ruido': save_filter_image(fs, image_sin_ruido, 'sin_ruido_' + file_name),
+                        'mejorada': save_filter_image(fs, image_mejorada, 'mejorada_' + file_name),
+                        'diferencias_resaltadas': save_filter_image(fs, image_diferencias_resaltadas, 'diferencias_resaltadas_' + file_name),
+                        'BGR': save_filter_image(fs, image_BGR, 'BGR_' + file_name),
+                        'bnw': save_filter_image(fs, image_bnw, 'bnw_' + file_name),
+                        'binarizada': save_filter_image(fs, image_binarizada, 'binarizada_' + file_name),
+                        'negativa': save_filter_image(fs, image_negativa, 'negativa_' + file_name),
+                        'log': save_filter_image(fs, image_log, 'log_' + file_name),
+                        'histograma': save_filter_image(fs, image_histograma, 'histograma_' + file_name),
+                        'suavizada': save_filter_image(fs, image_suavizada, 'suavizada_' + file_name),
+                        'umbralizada': save_filter_image(fs, image_umbralizada, 'umbralizada_' + file_name),
+                        'sobel': save_filter_image(fs, image_sobel, 'sobel_' + file_name),
+                        'erosion': save_filter_image(fs, image_erosion, 'erosion_' + file_name),
+                        'dilatacion': save_filter_image(fs, image_dilatacion, 'dilatacion_' + file_name),
+                        'apertura': save_filter_image(fs, image_apertura, 'apertura_' + file_name),
+                        'cierre': save_filter_image(fs, image_cierre, 'cierre_' + file_name),
+                    }
                 }-->
             <div class="flex flex-col items-center">
                 <img src="{{ original }}" alt="Original Image"
@@ -36,25 +42,18 @@
                     Original</p>
             </div>
             <div class="flex flex-col items-center">
-                <img src="{{ sin_ruido }}" alt="Sin Ruido"
+                <img src="{{ mejorada }}" alt="Nitidez"
                     class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
                 <p
                     class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-                    Menos Ruido</p>
+                    Nitidez</p>
             </div>
             <div class="flex flex-col items-center">
-                <img src="{{ mejorada }}" alt="Mejorada"
+                <img src="{{ sin_ruido }}" alt="Menos Ruido - Bilateral"
                     class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
                 <p
                     class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-                    Mayor definción</p>
-            </div>
-            <div class="flex flex-col items-center">
-                <img src="{{ diferencias_resaltadas }}" alt="Sepia"
-                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
-                <p
-                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-                    Menos Ruido 2</p>
+                    Menos Ruido - Bilateral</p>
             </div>
             <div class="flex flex-col items-center">
                 <img src="{{ BGR }}" alt="BGR"
@@ -64,20 +63,6 @@
                     BGR</p>
             </div>
             <div class="flex flex-col items-center">
-                <img src="{{ bnw }}" alt="Blanco y Negro"
-                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
-                <p
-                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-                    Blanco y Negro</p>
-            </div>
-            <div class="flex flex-col items-center">
-                <img src="{{ binarizada }}" alt="Binarizada"
-                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
-                <p
-                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-                    Binarizada</p>
-            </div>
-            <div class="flex flex-col items-center">
                 <img src="{{ negativa }}" alt="Negativa"
                     class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
                 <p
@@ -85,18 +70,25 @@
                     Negativa</p>
             </div>
             <div class="flex flex-col items-center">
-                <img src="{{ log }}" alt="Log"
+                <img src="{{ diferencias_resaltadas }}" alt="Menos Ruido - Blur"
                     class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
                 <p
                     class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-                    Log</p>
+                    Menos Ruido - Blur</p>
             </div>
             <div class="flex flex-col items-center">
-                <img src="{{ histograma }}" alt="Histograma"
+                <img src="{{ log }}" alt="Trans. Logaritmica"
                     class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
                 <p
                     class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-                    Histograma</p>
+                    Trans. Logaritmica</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ exponencial }}" alt="Trans. Exponencial"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Trans. Exponencial</p>
             </div>
             <div class="flex flex-col items-center">
                 <img src="{{ suavizada }}" alt="Suavizada"
@@ -106,12 +98,69 @@
                     Suavizada</p>
             </div>
             <div class="flex flex-col items-center">
+                <img src="{{ erosion }}" alt="Erosion"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Erosion</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ dilatacion }}" alt="Dilatacion"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Dilatacion</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ apertura }}" alt="Apertura"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Apertura</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ cierre }}" alt="Cierre"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Cierre</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ gray }}" alt="Escala de grises"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Escala de grises</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ sobel }}" alt="Deteccion de bordes"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Deteccion de bordes</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ binarizada }}" alt="Binarizada"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Binarizada</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="{{ histograma }}" alt="Histograma"
+                    class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                <p
+                    class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                    Histograma</p>
+            </div>
+            <div class="flex flex-col items-center">
                 <img src="{{ umbralizada }}" alt="Umbralizada"
                     class="rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
                 <p
                     class="mt-2 bg-blue-600 text-s font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
                     Umbralizada</p>
             </div>
+
         </div>
         <!-- Button to go back to the upload page -->
         <div class="text-center mt-2">
@@ -119,8 +168,6 @@
                 class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Subir
                 Otra Imagen</a>
         </div>
-    </div>
-
 </body>
 
 </html>

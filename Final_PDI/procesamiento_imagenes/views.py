@@ -1,3 +1,6 @@
+from PIL import Image
+import io
+import matplotlib.pyplot as plt
 import matplotlib
 import os
 import numpy as np
@@ -6,10 +9,8 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.shortcuts import render
 # Debe ir antes de importar pyplot o cualquier otro componente de Matplotlib
+# para que no intente abrir una ventana de visualización en el servidor
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import io
-from PIL import Image
 
 
 def assure_rgb(imagen):
@@ -30,19 +31,6 @@ def reducir_ruido(imagen):
     return imagen_sin_ruido
 
 
-def aplicar_filtro_sepia(imagen):
-    """
-    Aplica un filtro sepia a una imagen.
-    """
-    imagen_rgb = assure_rgb(imagen)
-    imagen_sepia = np.dot(imagen_rgb, [[0.272, 0.534, 0.131],
-                                       [0.349, 0.686, 0.168],
-                                       [0.393, 0.769, 0.189]])
-    imagen_sepia = np.clip(imagen_sepia, 0, 255)
-    imagen_sepia = imagen_sepia.astype('uint8')
-    return imagen_sepia
-
-
 def mejorar_calidad(imagen):
     """
     Mejora la calidad de una imagen aumentando su nitidez.
@@ -55,9 +43,9 @@ def mejorar_calidad(imagen):
     return imagen_mejorada
 
 
-def convertir_a_bnw(imagen):
+def convertir_a_gray(imagen):
     """
-    Convierte una imagen a blanco y negro.
+    Convierte una imagen a escala de grises.
     """
     imagen_rgb = assure_rgb(imagen)
     imagen_bnw = cv.cvtColor(imagen_rgb, cv.COLOR_RGB2GRAY)
@@ -104,10 +92,17 @@ def transformacion_logaritmica(imagen, constante=1):
     imagen (np.ndarray): Imagen de entrada en formato de matriz numpy.
     constante (float): Constante para ajustar la transformación. Valor por defecto es 1.
     """
-    imagen_rgb = assure_rgb(imagen)
-    c = constante * 255 / np.log(1 + np.max(imagen_rgb))
-    imagen_log = c * np.log(1 + imagen_rgb)
+    imagen = assure_rgb(imagen)
+    # Calcular el valor máximo de intensidad de píxel en la imagen
+    m = np.max(imagen)
+
+    # Calcular la constante para la transformación logarítmica
+    c = 255 / np.log(1 + m)
+
+    # Aplicar la transformación logarítmica
+    imagen_log = c * np.log(1 + imagen)
     imagen_log = np.array(imagen_log, dtype=np.uint8)
+
     return imagen_log
 
 
@@ -169,25 +164,115 @@ def umbralizacion_adaptativa(imagen, max_value=255, block_size=11, C=2):
         imagen_gris, max_value, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, block_size, C)
     return imagen_umbralizada
 
+
 def resaltar_diferencias_imagen(imagen):
     """
     Resalta las diferencias en una imagen aplicando un filtro de mediana y 
     calculando la diferencia con la imagen original.
-
-    Args:
-    imagen (np.ndarray): Imagen de entrada en formato de matriz numpy.
-
-    Returns:
-    np.ndarray: Imagen con diferencias resaltadas.
     """
-    imagen=assure_rgb(imagen)
-    
+    imagen = assure_rgb(imagen)
+
     imagen_gris = cv.cvtColor(imagen, cv.COLOR_BGR2GRAY)
     imagen_filtrada = cv.medianBlur(imagen_gris, 5)
     diferencia = cv.subtract(imagen_filtrada, imagen_gris)
     diferencia = cv.cvtColor(diferencia, cv.COLOR_GRAY2BGR)
     imagen_mejorada = cv.add(imagen, diferencia)
     return imagen_mejorada
+
+
+def transformacion_exponencial(imagen, gamma=0.67):
+    """
+    Aplica una transformación exponencial (corrección gamma) a la imagen.
+
+    Args:
+    imagen (np.ndarray): Imagen de entrada en formato de matriz numpy.
+    gamma (float): Valor gamma para la corrección. Valor por defecto es 1.0.
+    """
+    imagen = assure_rgb(imagen)
+    # Normalizar la imagen
+    imagen_normalizada = imagen / 255.0
+
+    # Aplicar la transformación exponencial
+    imagen_gamma = np.power(imagen_normalizada, gamma)
+
+    # Escalar de vuelta a valores de 8 bits y devolver
+    return np.uint8(imagen_gamma * 255)
+
+
+def deteccion_bordes(imagen):
+    """
+    Aplica la detección de bordes usando el operador de Sobel.
+
+    Args:
+    imagen (np.ndarray): Imagen de entrada en formato de matriz numpy.
+    """
+    # Convertir a escala de grises si es necesario
+    if len(imagen.shape) == 3:
+        imagen = cv.cvtColor(imagen, cv.COLOR_BGR2GRAY)
+
+    # Aplicar el operador de Sobel
+    sobelx = cv.Sobel(imagen, cv.CV_64F, 1, 0, ksize=3)
+    sobely = cv.Sobel(imagen, cv.CV_64F, 0, 1, ksize=3)
+
+    # Combinar ambos ejes
+    sobel_combinado = np.sqrt(np.square(sobelx) + np.square(sobely))
+    sobel_combinado = np.uint8(sobel_combinado / np.max(sobel_combinado) * 255)
+
+    return sobel_combinado
+
+
+def erosion_morfologica(imagen, kernel_size=3, iteraciones=2):
+    """
+    Aplica erosión morfológica a la imagen.
+
+    Args:
+    imagen (np.ndarray): Imagen de entrada en formato de matriz numpy.
+    kernel_size (int): Tamaño del kernel para la erosión.
+    iteraciones (int): Número de veces que se aplica la erosión.
+    """
+    imagen = assure_rgb(imagen)
+    kernel = np.ones((kernel_size, kernel_size), np.uint8)
+    return cv.erode(imagen, kernel, iterations=iteraciones)
+
+
+def dilatacion_morfologica(imagen, kernel_size=3, iteraciones=2):
+    """
+    Aplica dilatación morfológica a la imagen.
+
+    Args:
+    imagen (np.ndarray): Imagen de entrada en formato de matriz numpy.
+    kernel_size (int): Tamaño del kernel para la dilatación.
+    iteraciones (int): Número de veces que se aplica la dilatación.
+    """
+    imagen = assure_rgb(imagen)
+    kernel = np.ones((kernel_size, kernel_size), np.uint8)
+    return cv.dilate(imagen, kernel, iterations=iteraciones)
+
+
+def apertura_morfologica(imagen, kernel_size=3):
+    """
+    Aplica apertura morfológica (erosión seguida de dilatación) a la imagen.
+
+    Args:
+    imagen (np.ndarray): Imagen de entrada en formato de matriz numpy.
+    kernel_size (int): Tamaño del kernel para la apertura.
+    """
+    imagen = assure_rgb(imagen)
+    kernel = np.ones((kernel_size, kernel_size), np.uint8)
+    return cv.morphologyEx(imagen, cv.MORPH_OPEN, kernel)
+
+
+def cierre_morfologico(imagen, kernel_size=3):
+    """
+    Aplica cierre morfológico (dilatación seguida de erosión) a la imagen.
+
+    Args:
+    imagen (np.ndarray): Imagen de entrada en formato de matriz numpy.
+    kernel_size (int): Tamaño del kernel para el cierre.
+    """
+    imagen = assure_rgb(imagen)
+    kernel = np.ones((kernel_size, kernel_size), np.uint8)
+    return cv.morphologyEx(imagen, cv.MORPH_CLOSE, kernel)
 
 
 def image_upload_view(request):
@@ -211,16 +296,22 @@ def image_upload_view(request):
                 try:
                     image_sin_ruido = reducir_ruido(image)
                     image_mejorada = mejorar_calidad(image)
-                    image_diferencias_resaltadas = resaltar_diferencias_imagen(image)
+                    image_diferencias_resaltadas = resaltar_diferencias_imagen(
+                        image)
                     image_BGR = convertir_a_BGR(image)
-                    image_bnw = convertir_a_bnw(image)
+                    image_gray = convertir_a_gray(image)
                     image_binarizada = binarizar_imagen(image)
                     image_negativa = negativo_imagen(image)
                     image_log = transformacion_logaritmica(image)
-                    # Needs additional processing to display
                     image_histograma = histograma_imagen(image)
                     image_suavizada = filtrar_suavizar_imagen(image)
                     image_umbralizada = umbralizacion_adaptativa(image)
+                    image_sobel = deteccion_bordes(image)
+                    image_erosion = erosion_morfologica(image)
+                    image_dilatacion = dilatacion_morfologica(image)
+                    image_apertura = apertura_morfologica(image)
+                    image_cierre = cierre_morfologico(image)
+                    image_exponencial = transformacion_exponencial(image)
 
                     filters = {
                         'original': file_url,
@@ -228,13 +319,19 @@ def image_upload_view(request):
                         'mejorada': save_filter_image(fs, image_mejorada, 'mejorada_' + file_name),
                         'diferencias_resaltadas': save_filter_image(fs, image_diferencias_resaltadas, 'diferencias_resaltadas_' + file_name),
                         'BGR': save_filter_image(fs, image_BGR, 'BGR_' + file_name),
-                        'bnw': save_filter_image(fs, image_bnw, 'bnw_' + file_name),
+                        'gray': save_filter_image(fs, image_gray, 'gray_' + file_name),
                         'binarizada': save_filter_image(fs, image_binarizada, 'binarizada_' + file_name),
                         'negativa': save_filter_image(fs, image_negativa, 'negativa_' + file_name),
                         'log': save_filter_image(fs, image_log, 'log_' + file_name),
                         'histograma': save_filter_image(fs, image_histograma, 'histograma_' + file_name),
                         'suavizada': save_filter_image(fs, image_suavizada, 'suavizada_' + file_name),
                         'umbralizada': save_filter_image(fs, image_umbralizada, 'umbralizada_' + file_name),
+                        'sobel': save_filter_image(fs, image_sobel, 'sobel_' + file_name),
+                        'erosion': save_filter_image(fs, image_erosion, 'erosion_' + file_name),
+                        'dilatacion': save_filter_image(fs, image_dilatacion, 'dilatacion_' + file_name),
+                        'apertura': save_filter_image(fs, image_apertura, 'apertura_' + file_name),
+                        'cierre': save_filter_image(fs, image_cierre, 'cierre_' + file_name),
+                        'exponencial': save_filter_image(fs, image_exponencial, 'exponencial_' + file_name),
                     }
                     return render(request, 'procesamiento_imagenes/show_image.html', filters)
 
